@@ -5,8 +5,6 @@ elseif (WITH_UBUNTU)
     cmake_minimum_required(VERSION 2.8.9)
     # Find includes in corresponding build directories
     set(CMAKE_INCLUDE_CURRENT_DIR ON)
-    # Instruct CMake to run moc automatically when needed.
-    set(CMAKE_AUTOMOC ON)
 
 else()
     cmake_minimum_required(VERSION 2.8.7)
@@ -58,7 +56,7 @@ endif()
 
 if(WITH_QT5)
     message(STATUS "Building the Qt5 version")
-    find_package(Qt5Core 5.0 REQUIRED)
+    find_package(Qt5Core 5.2 REQUIRED)
     find_package(Qt5Gui REQUIRED)
     find_package(Qt5Network REQUIRED)
     find_package(Qt5Sql REQUIRED)
@@ -84,7 +82,7 @@ if(WITH_QT5)
         set(QMLPLUGIN_INSTALL_PREFIX "${QT_IMPORTS_DIR}")
         set(UBUNTU_DIR ${CMAKE_INSTALL_DATADIR}/trojita)
         set(UBUNTU_FULL_DIR ${CMAKE_INSTALL_FULL_DATADIR}/trojita)
-        set(UBUTNU_NAME "Trojita")
+        set(UBUNTU_NAME "Trojitá")
         set(UBUNTU_SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src/Ubuntu/)
         # config file
         configure_file("${CMAKE_CURRENT_SOURCE_DIR}/config.h.in"
@@ -530,7 +528,6 @@ set(trojitaHarmattan_SOURCES
 
 set(trojitaUbuntu_SOURCES
         ${CMAKE_CURRENT_SOURCE_DIR}/src/Ubuntu/main.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/src/Ubuntu/qtquick2applicationviewer/qtquick2applicationviewer.cpp
 )
 
 if(LinguistForTrojita_FOUND OR Qt5LinguistForTrojita_FOUND)
@@ -682,12 +679,12 @@ endif()
 
 #// add the Ubuntu Libs Here ALSO
 if(WITH_UBUNTU)
-    add_executable(trojita-tp ${trojitaUbuntu_SOURCES})
+    add_executable(trojita ${trojitaUbuntu_SOURCES})
     if(SUPPORTS_TARGET_INCLUDES)
-        set_property(TARGET trojita-tp APPEND PROPERTY INCLUDE_DIRECTORIES
-            ${QT_MKSPECS_DIR}/default ${CMAKE_CURRENT_SOURCE_DIR}/src/Ubuntu/qtquick2applicationviewer)
+        set_property(TARGET trojita APPEND PROPERTY INCLUDE_DIRECTORIES
+            ${QT_MKSPECS_DIR}/default ${CMAKE_CURRENT_SOURCE_DIR}/src/Ubuntu)
     endif()
-    target_link_libraries(trojita-tp AppVersion Imap MSA Streams qwwsmtpclient Common Composer
+    target_link_libraries(trojita AppVersion Imap MSA Streams qwwsmtpclient Common Composer
         ${QT5CORE_LIBRARY}
         ${QT5WIDGETS_LIBRARY}
         ${QT5SQL_LIBRARY}
@@ -720,7 +717,7 @@ elseif(WITH_UBUNTU AND WITH_QT5)
     qt5_use_modules(MSA Network)
     qt5_use_modules(Composer Gui Network)
     qt5_use_modules(Imap Gui Network Sql)
-    qt5_use_modules(trojita-tp Widgets Network Core Qml Quick)
+    qt5_use_modules(trojita Widgets Network Core Qml Quick)
 endif()
 
 
@@ -772,16 +769,16 @@ if(WITH_UBUNTU)
         DESTINATION ${CMAKE_INSTALL_PREFIX}/share/trojita/
     )
     install(
-        TARGETS trojita-tp
+        TARGETS trojita
         RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
     )
     install(
-        FILES ${trojita_ubuntu_path}/trojita-tp.desktop
+        FILES ${trojita_ubuntu_path}/trojita.desktop
         DESTINATION ${CMAKE_INSTALL_PREFIX}/share/applications
     )
 
     install(
-        FILES ${trojita_ubuntu_path}/trojita-tp.png
+        FILES ${trojita_ubuntu_path}/trojita.png
         DESTINATION ${CMAKE_INSTALL_PREFIX}/share/icons/hicolor/48x48/apps
     )
 endif()
