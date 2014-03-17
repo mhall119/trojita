@@ -1,9 +1,6 @@
 if (WITH_UBUNTU)
     cmake_minimum_required(VERSION 2.8.9)
     # Find includes in corresponding build directories
-    set(CMAKE_INCLUDE_CURRENT_DIR ON)
-    set(WITH_QT5 ON)
-    set(WITH_DESKTOP OFF)
     
 elseif(WITH_QT5)
     # The Qt5's qt5_use_modules is only available on 2.8.9 or later -- sweet, isn't it?
@@ -45,7 +42,7 @@ include(TrojitaOption)
 
 trojita_option(WITH_DESKTOP "Build desktop version" ON)
 trojita_option(WITH_HARMATTAN "Build MeeGo Harmattan version" OFF "NOT WITH_DESKTOP")
-trojita_option(WITH_UBUNTU "Build for the Ubuntu SDK" OFF "NOT WITH_DESKTOP" "WITH_QT5")
+trojita_option(WITH_UBUNTU "Build for the Ubuntu SDK" OFF "NOT WITH_DESKTOP;WITH_QT5")
 trojita_option(WITH_QT5 "Build with Qt5 library" OFF)
 trojita_option(WITH_RAGEL "Build with Ragel library" AUTO)
 trojita_option(WITH_ZLIB "Build with zlib library" AUTO)
@@ -59,7 +56,7 @@ endif()
 
 if(WITH_QT5)
     message(STATUS "Building the Qt5 version")
-    find_package(Qt5Core 5.2 REQUIRED)
+    find_package(Qt5Core 5.0 REQUIRED)
     find_package(Qt5Gui REQUIRED)
     find_package(Qt5Network REQUIRED)
     find_package(Qt5Sql REQUIRED)
@@ -700,7 +697,7 @@ if(WITH_UBUNTU)
     )
 endif()
 
-if(WITH_QT5 AND WITH_DESKTOP)
+if(WITH_QT5)
     qt5_use_modules(AppVersion Core)
     qt5_use_modules(Common Core Network)
     qt5_use_modules(Streams Network)
@@ -708,19 +705,14 @@ if(WITH_QT5 AND WITH_DESKTOP)
     qt5_use_modules(MSA Network)
     qt5_use_modules(Composer Gui Network)
     qt5_use_modules(Imap Gui Network Sql)
-    qt5_use_modules(DesktopGui Network WebKitWidgets)
-    qt5_use_modules(AbookAddressbook Widgets)
-    qt5_use_modules(be.contacts Widgets)
-    qt5_use_modules(trojita Widgets Network)
-elseif(WITH_QT5 AND WITH_UBUNTU)
-   qt5_use_modules(AppVersion Core)
-    qt5_use_modules(Common Core Network)
-    qt5_use_modules(Streams Network)
-    qt5_use_modules(qwwsmtpclient Network)
-    qt5_use_modules(MSA Network)
-    qt5_use_modules(Composer Gui Network)
-    qt5_use_modules(Imap Gui Network Sql)
-    qt5_use_modules(trojita Widgets Network Core Qml Quick)
+    if (WITH_DESKTOP)
+        qt5_use_modules(DesktopGui Network WebKitWidgets)
+        qt5_use_modules(AbookAddressbook Widgets)
+        qt5_use_modules(be.contacts Widgets)
+        qt5_use_modules(trojita Widgets Network)
+    elseif(WITH_UBUNTU)
+        qt5_use_modules(trojita Widgets Network Core Qml Quick)
+    endif()
 endif()
 
 
@@ -739,10 +731,7 @@ if(WITH_UBUNTU)
     set(
             trojita_ubuntu_path ${CMAKE_CURRENT_SOURCE_DIR}/src/Ubuntu
     )
-    include_directories(
-        ${CMAKE_BINARY_DIR}
-    #    ${trojita_ubuntu_path}
-    )
+
 #FIXME SEE if Upstream wants to make subdir cmake for whole project ?
     set(UBUNTU_QMLS
         ${trojita_ubuntu_path}/qml/trojita/PortModel.qml
