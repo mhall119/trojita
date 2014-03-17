@@ -42,7 +42,7 @@ include(TrojitaOption)
 
 trojita_option(WITH_DESKTOP "Build desktop version" ON)
 trojita_option(WITH_HARMATTAN "Build MeeGo Harmattan version" OFF "NOT WITH_DESKTOP")
-trojita_option(WITH_UBUNTU "Build for the Ubuntu SDK" OFF "NOT WITH_DESKTOP")
+trojita_option(WITH_UBUNTU "Build for the Ubuntu SDK" OFF "NOT WITH_DESKTOP" "WITH_QT5")
 trojita_option(WITH_QT5 "Build with Qt5 library" OFF)
 trojita_option(WITH_RAGEL "Build with Ragel library" AUTO)
 trojita_option(WITH_ZLIB "Build with zlib library" AUTO)
@@ -75,7 +75,7 @@ if(WITH_QT5)
         find_package(Qt5Qml REQUIRED)
         # qml plugin path
         execute_process(
-            COMMAND qmake -query QT_INSTALL_QML
+            COMMAND QT_QMAKE_EXECUTABLE -query QT_INSTALL_QML
             OUTPUT_VARIABLE QT_IMPORTS_DIR
             OUTPUT_STRIP_TRAILING_WHITESPACE
         )
@@ -680,10 +680,10 @@ endif()
 #// add the Ubuntu Libs Here ALSO
 if(WITH_UBUNTU)
     add_executable(trojita ${trojitaUbuntu_SOURCES})
-    if(SUPPORTS_TARGET_INCLUDES)
-        set_property(TARGET trojita APPEND PROPERTY INCLUDE_DIRECTORIES
-            ${QT_MKSPECS_DIR}/default ${CMAKE_CURRENT_SOURCE_DIR}/src/Ubuntu)
-    endif()
+
+    set_property(TARGET trojita APPEND PROPERTY INCLUDE_DIRECTORIES
+        ${QT_MKSPECS_DIR}/default ${CMAKE_CURRENT_SOURCE_DIR}/src/Ubuntu)
+
     target_link_libraries(trojita AppVersion Imap MSA Streams qwwsmtpclient Common Composer
         ${QT5CORE_LIBRARY}
         ${QT5WIDGETS_LIBRARY}
@@ -697,7 +697,7 @@ if(WITH_UBUNTU)
     )
 endif()
 
-if(WITH_QT5 AND NOT WITH_UBUNTU)
+if(WITH_QT5 AND WITH_DESKTOP)
     qt5_use_modules(AppVersion Core)
     qt5_use_modules(Common Core Network)
     qt5_use_modules(Streams Network)

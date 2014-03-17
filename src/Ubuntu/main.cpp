@@ -36,6 +36,7 @@ static QString fullPath(const QString &fileName)
     QString appPath = QCoreApplication::applicationDirPath();
     if (appPath == UBUNTU_BINDIR) {
         result = QString(UBUNTU_INSTALL_DATADIR) + fileName;
+        qDebug() << result;
     } else {
         result = QString(UBUNTU_DEV_DATADIR) + fileName;
         qDebug() << result;
