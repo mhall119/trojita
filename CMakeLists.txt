@@ -1,8 +1,4 @@
-if (WITH_UBUNTU)
-    cmake_minimum_required(VERSION 2.8.9)
-    # Find includes in corresponding build directories
-    
-elseif(WITH_QT5)
+if (WITH_QT5 OR WITH_UBUNTU)
     # The Qt5's qt5_use_modules is only available on 2.8.9 or later -- sweet, isn't it?
     cmake_minimum_required(VERSION 2.8.9)
 
