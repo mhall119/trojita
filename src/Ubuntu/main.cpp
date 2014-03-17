@@ -19,13 +19,12 @@
    You should have received a copy of the GNU General Public License
    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-//#include"qtquick2applicationviewer/qtquick2applicationviewer.pri"
-#include <QApplication>
 #include <QtGui/QGuiApplication>
+#include <QtQuick/QQuickView>
+#include <QtQml/QtQml>
 #include <QQmlContext>
-#include<QDebug>
+#include <QDebug>
 #include <QSettings>
-#include "qtquick2applicationviewer/qtquick2applicationviewer.h"
 #include "AppVersion/SetCoreApplication.h"
 #include "Common/Application.h"
 #include "Common/MetaTypes.h"
@@ -45,19 +44,45 @@ static QString fullPath(const QString &fileName)
 }
 int main(int argc, char *argv[])
 {
+
+    QGuiApplication app(argc, argv);
+    QStringList args = app.arguments();
+    if (args.contains("-h") || args.contains("--help")) {
+        qDebug() << "usage: " + args.at(0) + " [-p|--phone] [-t|--tablet] [-h|--help] [-I <path>]";
+        qDebug() << "    -p|--phone    If running on Desktop, start in a phone sized window.";
+        qDebug() << "    -t|--tablet   If running on Desktop, start in a tablet sized window.";
+        qDebug() << "    -h|--help     Print this help.";
+        return 0;
+    }
+
+    QQuickView viewer;
+    viewer.setResizeMode(QQuickView::SizeRootObjectToView);
+
+    viewer.engine()->rootContext()->setContextProperty("tablet", false);
+    viewer.engine()->rootContext()->setContextProperty("phone", false);
+    if (args.contains("-t") || args.contains("--tablet")) {
+        qDebug() << "running in tablet mode";
+        viewer.engine()->rootContext()->setContextProperty("tablet", true);
+    } else if (args.contains("-p") || args.contains("--phone")){
+        qDebug() << "running in phone mode";
+        viewer.engine()->rootContext()->setContextProperty("phone", true);
+    } else if (qgetenv("QT_QPA_PLATFORM") != "ubuntumirclient") {
+        // Default to tablet size on X11
+        viewer.engine()->rootContext()->setContextProperty("tablet", true);
+    }
+
     Common::registerMetaTypes();
-    QApplication app(argc, argv);
     Common::Application::name = QString::fromLatin1("trojita-tp");
     AppVersion::setGitVersion();
     AppVersion::setCoreApplicationData();
-    QtQuick2ApplicationViewer viewer;
+
 
     QSettings s;
     Imap::ImapAccess imapAccess(0, &s, QLatin1String("defaultAccount"));
-    QQmlContext *ctxt = viewer.rootContext();
-    ctxt->setContextProperty(QLatin1String("imapAccess"), &imapAccess);
+    viewer.engine()->rootContext()->setContextProperty(QLatin1String("imapAccess"), &imapAccess);
+
     viewer.setTitle("Trojita");
-    viewer.setMainQmlFile(fullPath("/qml/trojita/main.qml"));
-    viewer.showExpanded();
+    viewer.setSource(fullPath("/qml/trojita/main.qml"));
+    viewer.show();
     return app.exec();
 }
