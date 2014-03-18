@@ -684,17 +684,7 @@ if(WITH_UBUNTU)
     set_property(TARGET trojita APPEND PROPERTY INCLUDE_DIRECTORIES
         ${QT_MKSPECS_DIR}/default ${CMAKE_CURRENT_SOURCE_DIR}/src/Ubuntu)
 
-    target_link_libraries(trojita AppVersion Imap MSA Streams qwwsmtpclient Common Composer
-        ${QT5CORE_LIBRARY}
-        ${QT5WIDGETS_LIBRARY}
-        ${QT5SQL_LIBRARY}
-        ${QT5NETWORK_LIBRARY}
-        ${QT5WEBKIT_LIBRARY}
-        ${QT5WEBKITWIDGETS_LIBRARY}
-        ${QT5GUI_LIBRARY}
-        ${QT5QUICK_LIBRARY}
-        ${QT5QML_LIBRARY}
-    )
+    target_link_libraries(trojita AppVersion Imap MSA Streams qwwsmtpclient Common Composer )
 endif()
 
 if(WITH_QT5)
@@ -711,7 +701,7 @@ if(WITH_QT5)
         qt5_use_modules(be.contacts Widgets)
         qt5_use_modules(trojita Widgets Network)
     elseif(WITH_UBUNTU)
-        qt5_use_modules(trojita Widgets Network Core Qml Quick)
+        qt5_use_modules(trojita Network Core Qml Quick)
     endif()
 endif()
 
@@ -728,27 +718,23 @@ if(WITH_DESKTOP)
 endif()
 
 if(WITH_UBUNTU)
-    set(
-            trojita_ubuntu_path ${CMAKE_CURRENT_SOURCE_DIR}/src/Ubuntu
-    )
-
-#FIXME SEE if Upstream wants to make subdir cmake for whole project ?
+    set(TROJITA_UBUNTU_PATH ${CMAKE_CURRENT_SOURCE_DIR}/src/Ubuntu)
     set(UBUNTU_QMLS
-        ${trojita_ubuntu_path}/qml/trojita/PortModel.qml
-        ${trojita_ubuntu_path}/qml/trojita/AddressWidget.qml
-        ${trojita_ubuntu_path}/qml/trojita/NetworkPolicyButton.qml
-        ${trojita_ubuntu_path}/qml/trojita/OneMessagePage.qml
-        ${trojita_ubuntu_path}/qml/trojita/icon-m-settings-keychain.svg
-        ${trojita_ubuntu_path}/qml/trojita/ImapSettings.qml
-        ${trojita_ubuntu_path}/qml/trojita/PasswordInputSheet.qml
-        ${trojita_ubuntu_path}/qml/trojita/MailboxListPage.qml
-        ${trojita_ubuntu_path}/qml/trojita/PercentageSectionScroller.qml
-        ${trojita_ubuntu_path}/qml/trojita/SslSheet.qml
-        ${trojita_ubuntu_path}/qml/trojita/main.qml
-        ${trojita_ubuntu_path}/qml/trojita/MessageListPage.qml
-        ${trojita_ubuntu_path}/qml/trojita/Utils.js
-        ${trojita_ubuntu_path}/qml/trojita/CommonServerPage.qml
-        ${trojita_ubuntu_path}/qml/trojita/CommonServerModel.qml
+        ${TROJITA_UBUNTU_PATH}/qml/trojita/PortModel.qml
+        ${TROJITA_UBUNTU_PATH}/qml/trojita/AddressWidget.qml
+        ${TROJITA_UBUNTU_PATH}/qml/trojita/NetworkPolicyButton.qml
+        ${TROJITA_UBUNTU_PATH}/qml/trojita/OneMessagePage.qml
+        ${TROJITA_UBUNTU_PATH}/qml/trojita/icon-m-settings-keychain.svg
+        ${TROJITA_UBUNTU_PATH}/qml/trojita/ImapSettings.qml
+        ${TROJITA_UBUNTU_PATH}/qml/trojita/PasswordInputSheet.qml
+        ${TROJITA_UBUNTU_PATH}/qml/trojita/MailboxListPage.qml
+        ${TROJITA_UBUNTU_PATH}/qml/trojita/PercentageSectionScroller.qml
+        ${TROJITA_UBUNTU_PATH}/qml/trojita/SslSheet.qml
+        ${TROJITA_UBUNTU_PATH}/qml/trojita/main.qml
+        ${TROJITA_UBUNTU_PATH}/qml/trojita/MessageListPage.qml
+        ${TROJITA_UBUNTU_PATH}/qml/trojita/Utils.js
+        ${TROJITA_UBUNTU_PATH}/qml/trojita/CommonServerPage.qml
+        ${TROJITA_UBUNTU_PATH}/qml/trojita/CommonServerModel.qml
     )
     #make QML visable to QtCreator
     add_custom_target(
@@ -765,12 +751,12 @@ if(WITH_UBUNTU)
         RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
     )
     install(
-        FILES ${trojita_ubuntu_path}/trojita.desktop
+        FILES ${TROJITA_UBUNTU_PATH}/trojita.desktop
         DESTINATION ${CMAKE_INSTALL_PREFIX}/share/applications
     )
 
     install(
-        FILES ${trojita_ubuntu_path}/trojita.png
+        FILES ${TROJITA_UBUNTU_PATH}/trojita.png
         DESTINATION ${CMAKE_INSTALL_PREFIX}/share/icons/hicolor/48x48/apps
     )
 endif()
