@@ -36,6 +36,11 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${CXX11_COMPILER_FLAGS}")
 
 include(TrojitaOption)
 
+if(WITH_UBUNTU)
+    set(WITH_DESKTOP OFF)
+    set(WITH_QT5 ON)
+endif()
+
 trojita_option(WITH_DESKTOP "Build desktop version" ON)
 trojita_option(WITH_HARMATTAN "Build MeeGo Harmattan version" OFF "NOT WITH_DESKTOP")
 trojita_option(WITH_UBUNTU "Build for the Ubuntu SDK" OFF "NOT WITH_DESKTOP;WITH_QT5")
