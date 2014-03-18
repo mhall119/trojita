@@ -30,6 +30,8 @@
 #include "Common/MetaTypes.h"
 #include "Imap/Model/ImapAccess.h"
 #include "config.h"
+
+
 static QString fullPath(const QString &fileName)
 {
     QString result;
@@ -59,17 +61,17 @@ int main(int argc, char *argv[])
     QQuickView viewer;
     viewer.setResizeMode(QQuickView::SizeRootObjectToView);
 
-    viewer.engine()->rootContext()->setContextProperty("tablet", false);
-    viewer.engine()->rootContext()->setContextProperty("phone", false);
+    viewer.engine()->rootContext()->setContextProperty("tablet", QVariant(false));
+    viewer.engine()->rootContext()->setContextProperty("phone", QVariant(false));
     if (args.contains("-t") || args.contains("--tablet")) {
         qDebug() << "running in tablet mode";
-        viewer.engine()->rootContext()->setContextProperty("tablet", true);
+        viewer.engine()->rootContext()->setContextProperty("tablet", QVariant(true));
     } else if (args.contains("-p") || args.contains("--phone")){
         qDebug() << "running in phone mode";
-        viewer.engine()->rootContext()->setContextProperty("phone", true);
+        viewer.engine()->rootContext()->setContextProperty("phone", QVariant(true));
     } else if (qgetenv("QT_QPA_PLATFORM") != "ubuntumirclient") {
         // Default to tablet size on X11
-        viewer.engine()->rootContext()->setContextProperty("tablet", true);
+        viewer.engine()->rootContext()->setContextProperty("tablet", QVariant(true));
     }
 
     Common::registerMetaTypes();
@@ -83,7 +85,7 @@ int main(int argc, char *argv[])
     viewer.engine()->rootContext()->setContextProperty(QLatin1String("imapAccess"), &imapAccess);
 
     viewer.setTitle("Trojita");
-    viewer.setSource(fullPath("/qml/trojita/main.qml"));
+    viewer.setSource(fullPath("qml/trojita/main.qml"));
     viewer.show();
     return app.exec();
 }
