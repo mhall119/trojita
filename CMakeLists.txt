@@ -71,18 +71,17 @@ if(WITH_QT5)
         find_package(Qt5Qml REQUIRED)
         # qml plugin path
         execute_process(
-            COMMAND QT_QMAKE_EXECUTABLE -query QT_INSTALL_QML
+            COMMAND {QT_QMAKE_EXECUTABLE} -query QT_INSTALL_QML
             OUTPUT_VARIABLE QT_IMPORTS_DIR
             OUTPUT_STRIP_TRAILING_WHITESPACE
         )
-        set(QMLPLUGIN_INSTALL_PREFIX "${QT_IMPORTS_DIR}")
-        set(UBUNTU_DIR ${CMAKE_INSTALL_DATADIR}/trojita)
+
         set(UBUNTU_FULL_DIR ${CMAKE_INSTALL_FULL_DATADIR}/trojita)
         set(UBUNTU_NAME "Trojitá")
         set(UBUNTU_SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src/Ubuntu/)
-        # config file
-        configure_file("${CMAKE_CURRENT_SOURCE_DIR}/config.h.in"
-                "${CMAKE_CURRENT_BINARY_DIR}/config.h"
+        # Ubuntu config file
+        configure_file("${UBUNTU_SOURCE_DIR}/config.h.in"
+                "${UBUNTU_SOURCE_DIR}/config.h"
                 IMMEDIATE @ONLY)
         include(GNUInstallDirs)
     endif()
